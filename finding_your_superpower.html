@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Finding Your Superpower</title>
+<meta property="og:title" content="Finding Your Superpower">
+<meta property="og:description" content="10 Questions AI Will Never Answer For You. An IWD 2026 card deck by Zain Verjee.">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Finding Your Superpower">
+<meta name="twitter:description" content="10 Questions AI Will Never Answer For You. IWD 2026.">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: #faf8f5;
+    color: #2d2d2d;
+    min-height: 100vh;
+    overflow: hidden;
+    touch-action: pan-y;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+
+  .deck-container {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+
+  .card {
+    width: 90vw;
+    max-width: 420px;
+    min-height: 70vh;
+    max-height: 85vh;
+    background: #fff;
+    border-radius: 24px;
+    padding: 40px 32px;
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.08), 0 2px 8px rgba(0,0,0,0.04);
+    transition: transform 0.4s cubic-bezier(0.25, 0.1, 0.25, 1), opacity 0.4s ease;
+    cursor: grab;
+    overflow-y: auto;
+  }
+
+  .card.active {
+    transform: translateX(0) scale(1);
+    opacity: 1;
+    z-index: 3;
+  }
+
+  .card.next {
+    transform: translateX(8px) scale(0.96);
+    opacity: 0.6;
+    z-index: 2;
+    pointer-events: none;
+  }
+
+  .card.behind {
+    transform: translateX(16px) scale(0.92);
+    opacity: 0.3;
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  .card.hidden {
+    transform: translateX(-100vw);
+    opacity: 0;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  .card.swiping {
+    transition: none;
+    cursor: grabbing;
+  }
+
+  .card-number {
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    color: #c4a882;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 32px;
+  }
+
+  .card-question {
+    font-size: 28px;
+    font-weight: 700;
+    color: #1a1a2e;
+    line-height: 1.3;
+    margin-bottom: 24px;
+    letter-spacing: -0.3px;
+  }
+
+  .card-body {
+    font-size: 17px;
+    color: #555;
+    line-height: 1.7;
+    font-weight: 400;
+    margin-bottom: 32px;
+    flex-grow: 1;
+  }
+
+  .zain-nudge {
+    background: linear-gradient(135deg, #fdf8f2, #faf4eb);
+    border-radius: 16px;
+    padding: 24px;
+    margin-top: auto;
+  }
+
+  .zain-nudge .zain-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: #c4a882;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  .zain-nudge p {
+    font-size: 16px;
+    color: #3a3a3a;
+    line-height: 1.65;
+    font-style: italic;
+    font-weight: 400;
+  }
+
+  /* ===== OPENING CARD ===== */
+  .card.opening {
+    background: linear-gradient(135deg, #1a1a2e 0%, #2d2850 100%);
+    text-align: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .card.opening::before {
+    content: '';
+    position: absolute;
+    top: -60px;
+    right: -60px;
+    width: 200px;
+    height: 200px;
+    border: 1px solid rgba(196,168,130,0.15);
+    border-radius: 50%;
+  }
+
+  .card.opening::after {
+    content: '';
+    position: absolute;
+    bottom: -80px;
+    left: -40px;
+    width: 260px;
+    height: 260px;
+    border: 1px solid rgba(196,168,130,0.1);
+    border-radius: 50%;
+  }
+
+  .card.opening > div {
+    position: relative;
+    z-index: 1;
+  }
+
+  .card.opening .gold-rule {
+    width: 48px;
+    height: 2px;
+    background: #c4a882;
+    margin: 0 auto 32px;
+  }
+
+  .card.opening .card-number {
+    color: #c4a882;
+    margin-bottom: 24px;
+  }
+
+  .card.opening .series-title {
+    font-size: 38px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 8px;
+    letter-spacing: -0.5px;
+    line-height: 1.15;
+  }
+
+  .card.opening .series-sub {
+    font-size: 15px;
+    color: #a098c0;
+    margin-bottom: 48px;
+    font-weight: 400;
+    letter-spacing: 0.5px;
+  }
+
+  .card.opening .quote-mark {
+    font-size: 48px;
+    color: #c4a882;
+    font-family: Georgia, serif;
+    line-height: 0.5;
+    margin-bottom: 16px;
+    opacity: 0.6;
+  }
+
+  .card.opening .card-question {
+    color: rgba(255,255,255,0.9);
+    font-size: 20px;
+    font-weight: 400;
+    line-height: 1.6;
+    letter-spacing: 0;
+    font-style: italic;
+  }
+
+  .card.opening .attribution {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: #8880a8;
+    letter-spacing: 1px;
+    margin-top: 40px;
+  }
+
+  /* ===== CARD 10: CLIMAX ===== */
+  .card.climax {
+    background: linear-gradient(160deg, #fefcf9 0%, #faf4eb 100%);
+    border: 2px solid rgba(196,168,130,0.25);
+  }
+
+  .card.climax .card-number {
+    color: #c4a882;
+  }
+
+  .card.climax .card-question {
+    font-size: 32px;
+  }
+
+  .card.climax .fill-in {
+    font-size: 21px;
+    color: #1a1a2e;
+    line-height: 2.2;
+    font-weight: 500;
+    margin-bottom: 24px;
+  }
+
+  .card.climax .fill-in .blank {
+    border-bottom: 2.5px solid #c4a882;
+    padding: 0 28px;
+    color: #c4a882;
+    font-style: italic;
+    transition: border-color 0.3s ease;
+  }
+
+  .card.climax .card-body {
+    font-size: 16px;
+    color: #888;
+    font-weight: 500;
+    letter-spacing: 0.2px;
+  }
+
+  /* ===== CLOSING CARD ===== */
+  .card.closing {
+    background: linear-gradient(160deg, #faf8f5 0%, #f5efe6 100%);
+    text-align: center;
+    justify-content: center;
+    border: 2px solid rgba(196,168,130,0.2);
+    position: relative;
+  }
+
+  .card.closing .gold-rule {
+    width: 48px;
+    height: 2px;
+    background: #c4a882;
+    margin: 0 auto 32px;
+  }
+
+  .card.closing .card-question {
+    color: #1a1a2e;
+    font-size: 48px;
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: -1px;
+  }
+
+  .card.closing .hashtags {
+    font-family: 'DM Mono', monospace;
+    font-size: 14px;
+    color: #c4a882;
+    margin-top: 32px;
+    letter-spacing: 0.5px;
+  }
+
+  .card.closing .attribution {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: #bbb;
+    letter-spacing: 1px;
+    margin-top: 24px;
+  }
+
+  .card.closing .share-btn {
+    display: inline-block;
+    margin-top: 32px;
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: #1a1a2e;
+    background: #c4a882;
+    border: none;
+    border-radius: 100px;
+    padding: 14px 32px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .card.closing .share-btn:hover {
+    background: #b89a74;
+    transform: scale(1.03);
+  }
+
+  .card.closing .share-btn:active {
+    transform: scale(0.98);
+  }
+
+  .card.closing .share-copied {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: #c4a882;
+    margin-top: 12px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .card.closing .share-copied.show {
+    opacity: 1;
+  }
+
+  .card.closing .restart-link {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: #bbb;
+    letter-spacing: 1px;
+    margin-top: 16px;
+    cursor: pointer;
+    background: none;
+    border: none;
+    transition: color 0.3s ease;
+  }
+
+  .card.closing .restart-link:hover {
+    color: #888;
+  }
+
+  .fill-in {
+    font-size: 20px;
+    color: #1a1a2e;
+    line-height: 2;
+    font-weight: 500;
+    margin-bottom: 24px;
+  }
+
+  .fill-in .blank {
+    border-bottom: 2px solid #c4a882;
+    padding: 0 24px;
+    color: #c4a882;
+    font-style: italic;
+  }
+
+  /* ===== FIXED UI ===== */
+  .progress-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #c4a882, #e0c9a8);
+    transition: width 0.4s ease;
+    z-index: 100;
+    border-radius: 0 2px 2px 0;
+  }
+
+  .nav-hint {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: #bbb;
+    letter-spacing: 1px;
+    z-index: 100;
+    text-align: center;
+    transition: opacity 0.6s ease;
+  }
+
+  .nav-hint.faded {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .card-counter {
+    position: fixed;
+    top: 24px;
+    right: 24px;
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    color: #bbb;
+    letter-spacing: 1px;
+    z-index: 100;
+  }
+
+  .back-btn {
+    position: fixed;
+    top: 24px;
+    left: 24px;
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    color: #bbb;
+    letter-spacing: 1px;
+    z-index: 100;
+    cursor: pointer;
+    background: none;
+    border: none;
+    padding: 8px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .back-btn.visible {
+    opacity: 1;
+  }
+
+  .back-btn:hover {
+    color: #888;
+  }
+
+  /* Mobile bottom back tap zone */
+  .bottom-back {
+    position: fixed;
+    bottom: 12px;
+    left: 24px;
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: #ccc;
+    letter-spacing: 1px;
+    z-index: 100;
+    cursor: pointer;
+    background: none;
+    border: none;
+    padding: 8px 12px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .bottom-back.visible {
+    opacity: 1;
+  }
+
+  .bottom-back:hover {
+    color: #999;
+  }
+
+  @media (min-width: 481px) {
+    .bottom-back { display: none; }
+  }
+
+  @media (max-width: 480px) {
+    .card {
+      padding: 32px 24px;
+      min-height: 65vh;
+      border-radius: 20px;
+    }
+    .card-question { font-size: 24px; }
+    .card-body { font-size: 16px; }
+    .card.opening .series-title { font-size: 32px; }
+    .card.opening .card-question { font-size: 18px; }
+    .card.climax .card-question { font-size: 26px; }
+    .card.climax .fill-in { font-size: 18px; }
+    .zain-nudge p { font-size: 15px; }
+    .card.closing .card-question { font-size: 40px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="card-counter" id="counter">1 / 12</div>
+<button class="back-btn" id="backBtn" onclick="goBack()">BACK</button>
+<button class="bottom-back" id="bottomBack" onclick="goBack()">BACK</button>
+<div class="progress-bar" id="progressBar" style="width: 8.3%"></div>
+<div class="nav-hint" id="navHint">SWIPE OR TAP TO CONTINUE</div>
+
+<div class="deck-container" id="deck">
+
+  <!-- CARD 0: OPENING -->
+  <div class="card opening" data-index="0">
+    <div>
+      <div class="card-number">International Women's Day 2026</div>
+      <div class="gold-rule"></div>
+      <div class="series-title">Finding Your<br>Superpower</div>
+      <div class="series-sub">10 Questions AI Will Never Answer For You</div>
+      <div class="quote-mark">"</div>
+      <div class="card-question">The size of your dreams must always exceed your current capacity to achieve them.</div>
+      <div class="attribution">Ellen Johnson Sirleaf</div>
+    </div>
+  </div>
+
+  <!-- CARD 1 -->
+  <div class="card" data-index="1">
+    <div>
+      <div class="card-number">Question 01 of 10</div>
+      <div class="card-question">Where are you building from?</div>
+      <div class="card-body">Your city. Your culture. Your market. The place that shaped how you see the world. That is your starting point and your first advantage.</div>
+    </div>
+    <div class="zain-nudge">
+      <div class="zain-label">Zain</div>
+      <p>"I did this from Nairobi, on a laptop, in one afternoon. You already know things about where you are that every AI model in the world is missing."</p>
+    </div>
+  </div>
+
+  <!-- CARD 2 -->
+  <div class="card" data-index="2">
+    <div>
+      <div class="card-number">Question 02 of 10</div>
+      <div class="card-question">What do you know that AI doesn't?</div>
+      <div class="card-body">Your culture. The unwritten rules. The way business gets done where you are. The thing you learned by being in the room. That is your edge and every AI model in the world is missing it.</div>
+    </div>
+    <div class="zain-nudge">
+      <div class="zain-label">Zain</div>
+      <p>"The gap between what AI knows and what Africa needs is where I build."</p>
+    </div>
+  </div>
+
+  <!-- CARD 3 -->
+  <div class="card" data-index="3">
+    <div>
+      <div class="card-number">Question 03 of 10</div>
+      <div class="card-question">What is the problem you are trying to solve?</div>
+      <div class="card-body">Every great company, every great career, every great piece of work starts with one problem that will not let you sleep. Name it. That is your mission statement.</div>
+    </div>
+    <div class="zain-nudge">
+      <div class="zain-label">Zain</div>
+      <p>"Only 2% of African data is processed on the continent. Kate Kallot looked at that number and built Amini. I looked at how misinformation moves through African newsrooms and built Signal HQ. Your problem is your compass."</p>
+    </div>
+  </div>
+
+  <!-- CARD 4 -->
+  <div class="card" data-index="4">
+    <div>
+      <div class="card-number">Question 04 of 10</div>
+      <div class="card-question">What makes you angry?</div>
+      <div class="card-body">The gap between what exists and what should exist. That fire is fuel. The woman who gets angry about how African women are funded builds a different company than the woman who gets angry about digital access. Both are right. Name yours.</div>
+    </div>
+    <div class="zain-nudge">
+      <div class="zain-label">Zain</div>
+      <p>"In 2025, women founded startups received 0.9% of total African tech funding. I looked at that number and decided to build anyway."</p>
+    </div>
+  </div>
+
+  <!-- CARD 5 -->
+  <div class="card" data-index="5">
+    <div>
+      <div class="card-number">Question 05 of 10</div>
+      <div class="card-question">What have you survived?</div>
+      <div class="card-body">Every crisis you navigated is a pattern you will recognize before any algorithm. What went wrong taught you what to look for. That is your operating system.</div>
+    </div>
+    <div class="zain-nudge">
+      <div class="zain-label">Zain</div>
+      <p>"I built a media company called aKoma. We trained African creators through a fellowship. Those fellows went on to the BBC, The New York Times, the Berlin Film Festival. Then aKoma died. I took the hit. And I started building again."</p>
+    </div>
+  </div>
+
+  <!-- CARD 6 -->
+  <div class="card" data-index="6">
+    <div>
+      <div class="card-number">Question 06 of 10</div>
+      <div class="card-question">What are you still showing up for?</div>
+      <div class="card-body">The thing you carry and show up anyway. That is the thing that makes people trust you.</div>
+    </div>
+    <div class="zain-nudge">
+      <div class="zain-label">Zain</div>
+      <p>"I anchored global news on CNN while managing a chronic skin condition that covered my body. I spent years hiding. Then I stopped. Showing up is the whole game."</p>
+    </div>
+  </div>
+
+  <!-- CARD 7 -->
+  <div class="card" data-index="7">
+    <div>
+      <div class="card-number">Question 07 of 10</div>
+      <div class="card-question">What would you build if the answer was yes?</div>
+      <div class="card-body">One laptop. One internet connection. Full permission. What is the thing you would start tomorrow morning?</div>
+    </div>
+    <div class="zain-nudge">
+      <div class="zain-label">Zain</div>
+      <p>"A woman in Lagos with a laptop and the right AI tools can now produce work that would have required a team of 10 five years ago. I know this because I did it."</p>
+    </div>
+  </div>
+
+  <!-- CARD 8 -->
+  <div class="card" data-index="8">
+    <div>
+      <div class="card-number">Question 08 of 10</div>
+      <div class="card-question">Who are you bringing with you?</div>
+      <div class="card-body">Name the people you are pulling up. The ones who will be better because you decided to share what you know.</div>
+    </div>
+    <div class="zain-nudge">
+      <div class="zain-label">Zain</div>
+      <p>"I want to bring young African women and young Muslim women up with me. That is the point. If I build this and keep it to myself, I have built nothing."</p>
+    </div>
+  </div>
+
+  <!-- CARD 9 -->
+  <div class="card" data-index="9">
+    <div>
+      <div class="card-number">Question 09 of 10</div>
+      <div class="card-question">What language does your thinking happen in?</div>
+      <div class="card-body">AI thinks in English. Your best ideas might arrive in Swahili, Yoruba, Hausa, Arabic, Sheng, pidgin. The language your mind works in is the language your audience lives in. That is a moat no Silicon Valley model will cross anytime soon.</div>
+    </div>
+    <div class="zain-nudge">
+      <div class="zain-label">Zain</div>
+      <p>"I grew up speaking English and Swahili. My mother navigated a world that was not built for her and she did it in her own language, on her own terms. That is the blueprint."</p>
+    </div>
+  </div>
+
+  <!-- CARD 10: CLIMAX -->
+  <div class="card climax" data-index="10">
+    <div>
+      <div class="card-number">Question 10 of 10</div>
+      <div class="card-question">Say it in one line.</div>
+      <div class="fill-in">
+        I am <span class="blank">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>, in <span class="blank">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>.<br>
+        I do <span class="blank">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> for <span class="blank">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><br>
+        because only I know <span class="blank">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>.
+      </div>
+      <div class="card-body">Save this. Paste it at the start of every AI conversation for 30 days. Then tell me what changed.</div>
+    </div>
+    <div class="zain-nudge">
+      <div class="zain-label">Zain</div>
+      <p>"From a desk in Nairobi, one person with the right tools, the right knowledge, and the right context can compete with anyone. I am proving it every day. So can you."</p>
+    </div>
+  </div>
+
+  <!-- CARD 11: CLOSING -->
+  <div class="card closing" data-index="11">
+    <div>
+      <div class="gold-rule"></div>
+      <div class="card-question">Start now.</div>
+      <div class="hashtags">#FindingYourSuperpower &middot; #TheWomenAIForgot</div>
+      <div class="attribution">Zain Verjee / The Rundown Studio / IWD 2026</div>
+      <button class="share-btn" onclick="shareDeck()">SHARE THIS DECK</button>
+      <div class="share-copied" id="shareCopied">Link copied</div>
+      <button class="restart-link" onclick="restart()">START OVER</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  const cards = document.querySelectorAll('.card');
+  const total = cards.length;
+  let current = 0;
+  let startX = 0;
+  let currentX = 0;
+  let isDragging = false;
+  let hasAdvanced = false;
+
+  function updateCards() {
+    cards.forEach((card, i) => {
+      card.classList.remove('active', 'next', 'behind', 'hidden', 'swiping');
+      if (i === current) card.classList.add('active');
+      else if (i === current + 1) card.classList.add('next');
+      else if (i === current + 2) card.classList.add('behind');
+      else if (i < current) card.classList.add('hidden');
+      else card.classList.add('behind');
+    });
+
+    document.getElementById('counter').textContent = (current + 1) + ' / ' + total;
+    document.getElementById('progressBar').style.width = ((current + 1) / total * 100) + '%';
+
+    const backBtn = document.getElementById('backBtn');
+    const bottomBack = document.getElementById('bottomBack');
+    if (current > 0) {
+      backBtn.classList.add('visible');
+      bottomBack.classList.add('visible');
+    } else {
+      backBtn.classList.remove('visible');
+      bottomBack.classList.remove('visible');
+    }
+
+    // Fade nav hint after first advance
+    if (!hasAdvanced && current > 0) {
+      hasAdvanced = true;
+      document.getElementById('navHint').classList.add('faded');
+    }
+  }
+
+  function goNext() {
+    if (current < total - 1) {
+      current++;
+      updateCards();
+    }
+  }
+
+  function goBack() {
+    if (current > 0) {
+      current--;
+      updateCards();
+    }
+  }
+
+  function restart() {
+    current = 0;
+    hasAdvanced = false;
+    document.getElementById('navHint').classList.remove('faded');
+    updateCards();
+  }
+
+  function shareDeck() {
+    const url = window.location.href;
+    if (navigator.share) {
+      navigator.share({
+        title: 'Finding Your Superpower',
+        text: '10 Questions AI Will Never Answer For You. An IWD 2026 card deck by Zain Verjee.',
+        url: url
+      }).catch(() => {});
+    } else if (navigator.clipboard) {
+      navigator.clipboard.writeText(url).then(() => {
+        const el = document.getElementById('shareCopied');
+        el.classList.add('show');
+        setTimeout(() => el.classList.remove('show'), 2000);
+      });
+    }
+  }
+
+  // Touch events
+  document.addEventListener('touchstart', function(e) {
+    startX = e.touches[0].clientX;
+    isDragging = true;
+    if (cards[current]) cards[current].classList.add('swiping');
+  }, { passive: true });
+
+  document.addEventListener('touchmove', function(e) {
+    if (!isDragging) return;
+    currentX = e.touches[0].clientX;
+    const diff = currentX - startX;
+    if (cards[current]) {
+      if (diff < 0) {
+        cards[current].style.transform = 'translateX(' + diff + 'px) scale(1)';
+        cards[current].style.opacity = Math.max(0.3, 1 - Math.abs(diff) / 400);
+      } else if (diff > 0 && current > 0) {
+        cards[current].style.transform = 'translateX(' + (diff * 0.3) + 'px) scale(1)';
+      }
+    }
+  }, { passive: true });
+
+  document.addEventListener('touchend', function(e) {
+    if (!isDragging) return;
+    isDragging = false;
+    const diff = currentX - startX;
+    if (cards[current]) {
+      cards[current].classList.remove('swiping');
+      cards[current].style.transform = '';
+      cards[current].style.opacity = '';
+    }
+    if (diff < -60) goNext();
+    else if (diff > 60) goBack();
+    startX = 0;
+    currentX = 0;
+  });
+
+  // Click/tap to advance
+  document.addEventListener('click', function(e) {
+    if (e.target.closest('.back-btn') || e.target.closest('.bottom-back') || e.target.closest('.share-btn') || e.target.closest('.restart-link')) return;
+    if (Math.abs(currentX - startX) < 10) goNext();
+  });
+
+  // Keyboard
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'ArrowRight' || e.key === ' ') goNext();
+    if (e.key === 'ArrowLeft') goBack();
+  });
+
+  updateCards();
+</script>
+
+</body>
+</html>
