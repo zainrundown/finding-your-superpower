@@ -34,6 +34,7 @@
     position: relative;
   }
 
+  /* ===== BASE CARD â every single card uses this ===== */
   .card {
     width: 90vw;
     max-width: 420px;
@@ -52,38 +53,13 @@
     overflow-y: auto;
   }
 
-  .card.active {
-    transform: translateX(0) scale(1);
-    opacity: 1;
-    z-index: 3;
-  }
+  .card.active { transform: translateX(0) scale(1); opacity: 1; z-index: 3; }
+  .card.next { transform: translateX(8px) scale(0.96); opacity: 0.6; z-index: 2; pointer-events: none; }
+  .card.behind { transform: translateX(16px) scale(0.92); opacity: 0.3; z-index: 1; pointer-events: none; }
+  .card.hidden { transform: translateX(-100vw); opacity: 0; z-index: 0; pointer-events: none; }
+  .card.swiping { transition: none; cursor: grabbing; }
 
-  .card.next {
-    transform: translateX(8px) scale(0.96);
-    opacity: 0.6;
-    z-index: 2;
-    pointer-events: none;
-  }
-
-  .card.behind {
-    transform: translateX(16px) scale(0.92);
-    opacity: 0.3;
-    z-index: 1;
-    pointer-events: none;
-  }
-
-  .card.hidden {
-    transform: translateX(-100vw);
-    opacity: 0;
-    z-index: 0;
-    pointer-events: none;
-  }
-
-  .card.swiping {
-    transition: none;
-    cursor: grabbing;
-  }
-
+  /* ===== SHARED ELEMENT STYLES ===== */
   .card-number {
     font-family: 'DM Mono', monospace;
     font-size: 13px;
@@ -111,14 +87,19 @@
     flex-grow: 1;
   }
 
-  .zain-nudge {
-    background: linear-gradient(135deg, #fdf8f2, #faf4eb);
-    border-radius: 16px;
-    padding: 24px;
+  /* Bottom section â used on every card */
+  .card-bottom {
     margin-top: auto;
   }
 
-  .zain-nudge .zain-label {
+  /* Zain nudge â used on question cards */
+  .card-bottom.nudge {
+    background: linear-gradient(135deg, #fdf8f2, #faf4eb);
+    border-radius: 16px;
+    padding: 24px;
+  }
+
+  .card-bottom .zain-label {
     font-family: 'DM Mono', monospace;
     font-size: 11px;
     color: #c4a882;
@@ -127,7 +108,7 @@
     margin-bottom: 12px;
   }
 
-  .zain-nudge p {
+  .card-bottom.nudge p {
     font-size: 16px;
     color: #3a3a3a;
     line-height: 1.65;
@@ -135,92 +116,72 @@
     font-weight: 400;
   }
 
-  /* ===== OPENING CARD ===== */
+  /* ===== OPENING CARD â only colors/text, NO layout overrides ===== */
   .card.opening {
     background: linear-gradient(135deg, #1a1a2e 0%, #2d2850 100%);
     text-align: center;
-    position: relative;
   }
 
-  .card.opening .gold-rule {
+  .card.opening .card-number { color: #c4a882; }
+
+  .gold-rule {
     width: 48px;
     height: 2px;
     background: #c4a882;
     margin: 0 auto 16px;
   }
 
-  .card.opening .card-number {
-    color: #c4a882;
-    margin-bottom: 12px;
-  }
-
-  .card.opening .series-title {
-    font-size: 34px;
+  .series-title {
+    font-size: 38px;
     font-weight: 700;
     color: #fff;
-    margin-bottom: 6px;
+    margin-bottom: 8px;
     letter-spacing: -0.5px;
     line-height: 1.15;
   }
 
-  .card.opening .series-sub {
-    font-size: 14px;
+  .series-sub {
+    font-size: 15px;
     color: #a098c0;
-    margin-bottom: 20px;
+    margin-bottom: 24px;
     font-weight: 400;
     letter-spacing: 0.5px;
   }
 
-  .card.opening .quote-mark {
-    font-size: 36px;
+  .quote-mark {
+    font-size: 48px;
     color: #c4a882;
     font-family: Georgia, serif;
     line-height: 0.5;
-    margin-bottom: 12px;
+    margin-bottom: 16px;
     opacity: 0.6;
   }
 
-  .card.opening .card-question {
+  .opening-quote {
     color: rgba(255,255,255,0.9);
-    font-size: 18px;
+    font-size: 20px;
     font-weight: 400;
     line-height: 1.55;
-    letter-spacing: 0;
     font-style: italic;
+    margin-bottom: 16px;
   }
 
-  .card.opening .attribution {
+  .opening-attribution {
     font-family: 'DM Mono', monospace;
     font-size: 12px;
     color: #8880a8;
     letter-spacing: 1px;
-    margin-top: 16px;
   }
 
-  .opening-bottom {
-    margin-top: auto;
-  }
-
-  .closing-bottom {
-    margin-top: auto;
-    text-align: center;
-  }
-
-  /* ===== CARD 10: CLIMAX ===== */
+  /* ===== CLIMAX CARD â only colors ===== */
   .card.climax {
     background: linear-gradient(160deg, #fefcf9 0%, #faf4eb 100%);
     border: 2px solid rgba(196,168,130,0.25);
   }
 
-  .card.climax .card-number {
-    color: #c4a882;
-  }
+  .card.climax .card-question { font-size: 32px; }
 
-  .card.climax .card-question {
-    font-size: 32px;
-  }
-
-  .card.climax .fill-in {
+  .fill-in {
     font-size: 21px;
     color: #1a1a2e;
     line-height: 2.2;
@@ -228,12 +189,11 @@
     margin-bottom: 24px;
   }
 
-  .card.climax .fill-in .blank {
+  .fill-in .blank {
     border-bottom: 2.5px solid #c4a882;
     padding: 0 28px;
     color: #c4a882;
     font-style: italic;
-    transition: border-color 0.3s ease;
   }
 
   .card.climax .card-body {
@@ -243,48 +203,40 @@
     letter-spacing: 0.2px;
   }
 
-  /* ===== CLOSING CARD ===== */
+  /* ===== CLOSING CARD â only colors, NO layout overrides ===== */
   .card.closing {
     background: linear-gradient(160deg, #faf8f5 0%, #f5efe6 100%);
     text-align: center;
     border: 2px solid rgba(196,168,130,0.2);
-    position: relative;
   }
 
-  .card.closing .gold-rule {
-    width: 48px;
-    height: 2px;
-    background: #c4a882;
-    margin: 0 auto 32px;
-  }
-
-  .card.closing .card-question {
-    color: #1a1a2e;
+  .closing-headline {
     font-size: 48px;
     font-weight: 700;
+    color: #1a1a2e;
     line-height: 1.2;
     letter-spacing: -1px;
+    margin-bottom: 24px;
   }
 
-  .card.closing .hashtags {
+  .hashtags {
     font-family: 'DM Mono', monospace;
     font-size: 14px;
     color: #c4a882;
-    margin-top: 32px;
     letter-spacing: 0.5px;
+    margin-bottom: 16px;
   }
 
-  .card.closing .attribution {
+  .closing-attribution {
     font-family: 'DM Mono', monospace;
     font-size: 12px;
     color: #bbb;
     letter-spacing: 1px;
-    margin-top: 24px;
   }
 
-  .card.closing .share-btn {
+  .share-btn {
     display: inline-block;
-    margin-top: 32px;
+    margin-top: 24px;
     font-family: 'DM Mono', monospace;
     font-size: 13px;
     letter-spacing: 1.5px;
@@ -298,16 +250,10 @@
     transition: all 0.3s ease;
   }
 
-  .card.closing .share-btn:hover {
-    background: #b89a74;
-    transform: scale(1.03);
-  }
+  .share-btn:hover { background: #b89a74; transform: scale(1.03); }
+  .share-btn:active { transform: scale(0.98); }
 
-  .card.closing .share-btn:active {
-    transform: scale(0.98);
-  }
-
-  .card.closing .share-copied {
+  .share-copied {
     font-family: 'DM Mono', monospace;
     font-size: 12px;
     color: #c4a882;
@@ -316,11 +262,9 @@
     transition: opacity 0.3s ease;
   }
 
-  .card.closing .share-copied.show {
-    opacity: 1;
-  }
+  .share-copied.show { opacity: 1; }
 
-  .card.closing .restart-link {
+  .restart-link {
     font-family: 'DM Mono', monospace;
     font-size: 12px;
     color: #bbb;
@@ -332,24 +276,7 @@
     transition: color 0.3s ease;
   }
 
-  .card.closing .restart-link:hover {
-    color: #888;
-  }
-
-  .fill-in {
-    font-size: 20px;
-    color: #1a1a2e;
-    line-height: 2;
-    font-weight: 500;
-    margin-bottom: 24px;
-  }
-
-  .fill-in .blank {
-    border-bottom: 2px solid #c4a882;
-    padding: 0 24px;
-    color: #c4a882;
-    font-style: italic;
-  }
+  .restart-link:hover { color: #888; }
 
   /* ===== FIXED UI ===== */
   .progress-bar {
@@ -377,10 +304,7 @@
     transition: opacity 0.6s ease;
   }
 
-  .nav-hint.faded {
-    opacity: 0;
-    pointer-events: none;
-  }
+  .nav-hint.faded { opacity: 0; pointer-events: none; }
 
   .card-counter {
     position: fixed;
@@ -410,15 +334,9 @@
     transition: opacity 0.3s ease;
   }
 
-  .back-btn.visible {
-    opacity: 1;
-  }
+  .back-btn.visible { opacity: 1; }
+  .back-btn:hover { color: #888; }
 
-  .back-btn:hover {
-    color: #888;
-  }
-
-  /* Mobile bottom back tap zone */
   .bottom-back {
     position: fixed;
     bottom: 12px;
@@ -436,18 +354,14 @@
     transition: opacity 0.3s ease;
   }
 
-  .bottom-back.visible {
-    opacity: 1;
-  }
-
-  .bottom-back:hover {
-    color: #999;
-  }
+  .bottom-back.visible { opacity: 1; }
+  .bottom-back:hover { color: #999; }
 
   @media (min-width: 481px) {
     .bottom-back { display: none; }
   }
 
+  /* ===== MOBILE â uniform for ALL cards ===== */
   @media (max-width: 480px) {
     .card {
       padding: 28px 22px;
@@ -455,22 +369,18 @@
       max-height: 88vh;
       border-radius: 20px;
     }
+    .card-number { margin-bottom: 20px; }
     .card-question { font-size: 24px; }
     .card-body { font-size: 16px; }
-    .card.opening { }
-    .card.closing { }
-    .card.opening .card-number { font-size: 11px; margin-bottom: 8px; }
-    .card.opening .gold-rule { margin: 0 auto 10px; }
-    .card.opening .series-title { font-size: 28px; }
-    .card.opening .card-question { font-size: 16px; line-height: 1.5; }
-    .card.opening .series-sub { font-size: 13px; margin-bottom: 14px; }
-    .card.opening .quote-mark { font-size: 28px; margin-bottom: 8px; }
-    .card.opening .attribution { margin-top: 12px; }
+    .series-title { font-size: 30px; }
+    .series-sub { font-size: 13px; }
+    .opening-quote { font-size: 17px; }
+    .quote-mark { font-size: 36px; }
+    .closing-headline { font-size: 36px; }
     .card.climax .card-question { font-size: 26px; }
     .card.climax .fill-in { font-size: 18px; }
-    .zain-nudge p { font-size: 15px; }
-    .card.closing .card-question { font-size: 36px; }
-    .card.closing .share-btn { margin-top: 24px; padding: 12px 28px; }
+    .card-bottom.nudge p { font-size: 15px; }
+    .share-btn { padding: 12px 28px; }
   }
 </style>
 </head>
@@ -492,10 +402,10 @@
       <div class="series-title">Finding Your<br>Superpower</div>
       <div class="series-sub">10 Questions AI Will Never Answer For You</div>
     </div>
-    <div class="opening-bottom">
-      <div class="quote-mark">"</div>
-      <div class="card-question">The size of your dreams must always exceed your current capacity to achieve them.</div>
-      <div class="attribution">Ellen Johnson Sirleaf</div>
+    <div class="card-bottom">
+      <div class="quote-mark">&ldquo;</div>
+      <div class="opening-quote">The size of your dreams must always exceed your current capacity to achieve them.</div>
+      <div class="opening-attribution">Ellen Johnson Sirleaf</div>
     </div>
   </div>
 
@@ -506,9 +416,9 @@
       <div class="card-question">Where are you building from?</div>
       <div class="card-body">Your city. Your culture. Your market. The place that shaped how you see the world. That is your starting point and your first advantage.</div>
     </div>
-    <div class="zain-nudge">
+    <div class="card-bottom nudge">
       <div class="zain-label">Zain</div>
-      <p>"I did this from Nairobi, on a laptop, in one afternoon. You already know things about where you are that every AI model in the world is missing."</p>
+      <p>&ldquo;I did this from Nairobi, on a laptop, in one afternoon. You already know things about where you are that every AI model in the world is missing.&rdquo;</p>
     </div>
   </div>
 
@@ -516,12 +426,12 @@
   <div class="card" data-index="2">
     <div>
       <div class="card-number">Question 02 of 10</div>
-      <div class="card-question">What do you know that AI doesn't?</div>
+      <div class="card-question">What do you know that AI doesn&rsquo;t?</div>
       <div class="card-body">Your culture. The unwritten rules. The way business gets done where you are. The thing you learned by being in the room. That is your edge and every AI model in the world is missing it.</div>
     </div>
-    <div class="zain-nudge">
+    <div class="card-bottom nudge">
       <div class="zain-label">Zain</div>
-      <p>"The gap between what AI knows and what Africa needs is where I build."</p>
+      <p>&ldquo;The gap between what AI knows and what Africa needs is where I build.&rdquo;</p>
     </div>
   </div>
 
@@ -532,9 +442,9 @@
       <div class="card-question">What is the problem you are trying to solve?</div>
       <div class="card-body">Every great company, every great career, every great piece of work starts with one problem that will not let you sleep. Name it. That is your mission statement.</div>
     </div>
-    <div class="zain-nudge">
+    <div class="card-bottom nudge">
       <div class="zain-label">Zain</div>
-      <p>"Only 2% of African data is processed on the continent. Kate Kallot looked at that number and built Amini. I looked at how misinformation moves through African newsrooms and built Signal HQ. Your problem is your compass."</p>
+      <p>&ldquo;Only 2% of African data is processed on the continent. Kate Kallot looked at that number and built Amini. I looked at how misinformation moves through African newsrooms and built Signal HQ. Your problem is your compass.&rdquo;</p>
     </div>
   </div>
 
@@ -545,9 +455,9 @@
       <div class="card-question">What makes you angry?</div>
       <div class="card-body">The gap between what exists and what should exist. That fire is fuel. The woman who gets angry about how African women are funded builds a different company than the woman who gets angry about digital access. Both are right. Name yours.</div>
     </div>
-    <div class="zain-nudge">
+    <div class="card-bottom nudge">
       <div class="zain-label">Zain</div>
-      <p>"In 2025, women founded startups received 0.9% of total African tech funding. I looked at that number and decided to build anyway."</p>
+      <p>&ldquo;In 2025, women founded startups received 0.9% of total African tech funding. I looked at that number and decided to build anyway.&rdquo;</p>
     </div>
   </div>
 
@@ -558,9 +468,9 @@
       <div class="card-question">What have you survived?</div>
       <div class="card-body">Every crisis you navigated is a pattern you will recognize before any algorithm. What went wrong taught you what to look for. That is your operating system.</div>
     </div>
-    <div class="zain-nudge">
+    <div class="card-bottom nudge">
       <div class="zain-label">Zain</div>
-      <p>"I built a media company called aKoma. We trained African creators through a fellowship. Those fellows went on to the BBC, The New York Times, the Berlin Film Festival. Then aKoma died. I took the hit. And I started building again."</p>
+      <p>&ldquo;I built a media company called aKoma. We trained African creators through a fellowship. Those fellows went on to the BBC, The New York Times, the Berlin Film Festival. Then aKoma died. I took the hit. And I started building again.&rdquo;</p>
     </div>
   </div>
 
@@ -571,9 +481,9 @@
       <div class="card-question">What are you still showing up for?</div>
       <div class="card-body">The thing you carry and show up anyway. That is the thing that makes people trust you.</div>
     </div>
-    <div class="zain-nudge">
+    <div class="card-bottom nudge">
       <div class="zain-label">Zain</div>
-      <p>"I anchored global news on CNN while managing a chronic skin condition that covered my body. I spent years hiding. Then I stopped. Showing up is the whole game."</p>
+      <p>&ldquo;I anchored global news on CNN while managing a chronic skin condition that covered my body. I spent years hiding. Then I stopped. Showing up is the whole game.&rdquo;</p>
     </div>
   </div>
 
@@ -584,9 +494,9 @@
       <div class="card-question">What would you build if the answer was yes?</div>
       <div class="card-body">One laptop. One internet connection. Full permission. What is the thing you would start tomorrow morning?</div>
     </div>
-    <div class="zain-nudge">
+    <div class="card-bottom nudge">
       <div class="zain-label">Zain</div>
-      <p>"A woman in Lagos with a laptop and the right AI tools can now produce work that would have required a team of 10 five years ago. I know this because I did it."</p>
+      <p>&ldquo;A woman in Lagos with a laptop and the right AI tools can now produce work that would have required a team of 10 five years ago. I know this because I did it.&rdquo;</p>
     </div>
   </div>
 
@@ -597,9 +507,9 @@
       <div class="card-question">Who are you bringing with you?</div>
       <div class="card-body">Name the people you are pulling up. The ones who will be better because you decided to share what you know.</div>
     </div>
-    <div class="zain-nudge">
+    <div class="card-bottom nudge">
       <div class="zain-label">Zain</div>
-      <p>"I want to bring young African women and young Muslim women up with me. That is the point. If I build this and keep it to myself, I have built nothing."</p>
+      <p>&ldquo;I want to bring young African women and young Muslim women up with me. That is the point. If I build this and keep it to myself, I have built nothing.&rdquo;</p>
     </div>
   </div>
 
@@ -610,9 +520,9 @@
       <div class="card-question">What language does your thinking happen in?</div>
       <div class="card-body">AI thinks in English. Your best ideas might arrive in Swahili, Yoruba, Hausa, Arabic, Sheng, pidgin. The language your mind works in is the language your audience lives in. That is a moat no Silicon Valley model will cross anytime soon.</div>
     </div>
-    <div class="zain-nudge">
+    <div class="card-bottom nudge">
       <div class="zain-label">Zain</div>
-      <p>"I grew up speaking English and Swahili. My mother navigated a world that was not built for her and she did it in her own language, on her own terms. That is the blueprint."</p>
+      <p>&ldquo;I grew up speaking English and Swahili. My mother navigated a world that was not built for her and she did it in her own language, on her own terms. That is the blueprint.&rdquo;</p>
     </div>
   </div>
 
@@ -628,9 +538,9 @@
       </div>
       <div class="card-body">Save this. Paste it at the start of every AI conversation for 30 days. Then tell me what changed.</div>
     </div>
-    <div class="zain-nudge">
+    <div class="card-bottom nudge">
       <div class="zain-label">Zain</div>
-      <p>"From a desk in Nairobi, one person with the right tools, the right knowledge, and the right context can compete with anyone. I am proving it every day. So can you."</p>
+      <p>&ldquo;From a desk in Nairobi, one person with the right tools, the right knowledge, and the right context can compete with anyone. I am proving it every day. So can you.&rdquo;</p>
     </div>
   </div>
 
@@ -638,11 +548,11 @@
   <div class="card closing" data-index="11">
     <div>
       <div class="gold-rule"></div>
-      <div class="card-question">Start now.</div>
+      <div class="closing-headline">Start now.</div>
       <div class="hashtags">#FindingYourSuperpower &middot; #TheWomenAIForgot</div>
-      <div class="attribution">Zain Verjee / The Rundown Studio / IWD 2026</div>
+      <div class="closing-attribution">Zain Verjee / The Rundown Studio / IWD 2026</div>
     </div>
-    <div class="closing-bottom">
+    <div class="card-bottom">
       <button class="share-btn" onclick="shareDeck()">SHARE THIS DECK</button>
       <div class="share-copied" id="shareCopied">Link copied</div>
       <button class="restart-link" onclick="restart()">START OVER</button>
@@ -683,7 +593,6 @@
       bottomBack.classList.remove('visible');
     }
 
-    // Fade nav hint after first advance
     if (!hasAdvanced && current > 0) {
       hasAdvanced = true;
       document.getElementById('navHint').classList.add('faded');
@@ -691,17 +600,11 @@
   }
 
   function goNext() {
-    if (current < total - 1) {
-      current++;
-      updateCards();
-    }
+    if (current < total - 1) { current++; updateCards(); }
   }
 
   function goBack() {
-    if (current > 0) {
-      current--;
-      updateCards();
-    }
+    if (current > 0) { current--; updateCards(); }
   }
 
   function restart() {
@@ -728,7 +631,6 @@
     }
   }
 
-  // Touch events
   document.addEventListener('touchstart', function(e) {
     startX = e.touches[0].clientX;
     isDragging = true;
@@ -764,13 +666,11 @@
     currentX = 0;
   });
 
-  // Click/tap to advance
   document.addEventListener('click', function(e) {
     if (e.target.closest('.back-btn') || e.target.closest('.bottom-back') || e.target.closest('.share-btn') || e.target.closest('.restart-link')) return;
     if (Math.abs(currentX - startX) < 10) goNext();
   });
 
-  // Keyboard
   document.addEventListener('keydown', function(e) {
     if (e.key === 'ArrowRight' || e.key === ' ') goNext();
     if (e.key === 'ArrowLeft') goBack();
